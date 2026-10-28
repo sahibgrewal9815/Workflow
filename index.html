@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#DF5830">
+<title>Studio Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F4F1;--surface:#fff;--border:#E4E1DC;--text:#1D1B19;--muted:#7A756E;--primary:#DF5830;--primary-h:#FF6F1F;--soft:#FCE9E2;--ok:#2E7D5B;--okbg:#E3F1EA;--warn:#B3261E;--chip:#EDEAE5;--sh:0 6px 16px rgba(40,30,20,.08);}
+*{box-sizing:border-box;margin:0}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.4;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:30px;font-weight:700;letter-spacing:-.02em}
+h2{font-size:17px;font-weight:600}
+.muted{color:var(--muted);font-size:13px}
+.btn{background:var(--primary);color:#fff;border:0;border-radius:12px;padding:11px 18px;font-weight:600;cursor:pointer;transition:background .15s,box-shadow .15s}
+.btn:hover{background:var(--primary-h);box-shadow:0 0 14px rgba(255,111,31,.35)}
+.btn.ghost{background:var(--chip);color:var(--text)}.btn.ghost:hover{box-shadow:none;background:var(--border)}
+.btn.sm{padding:6px 12px;font-size:13px;border-radius:10px}
+.btn.danger{background:var(--warn)}
+input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+textarea{resize:vertical;min-height:56px}
+.who{display:grid;gap:12px;margin-top:24px}
+.who button{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--sh);cursor:pointer;text-align:left;font-size:18px;font-weight:600}
+.who button:hover{border-color:var(--primary)}
+.av{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.av.s{width:28px;height:28px;font-size:12px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.me{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 12px 4px 4px;cursor:pointer}
+.tabs{display:flex;gap:20px;border-bottom:1px solid var(--border);margin:8px 0 14px}
+.tabs button{background:none;border:0;padding:10px 0;color:var(--muted);font-weight:500;cursor:pointer;border-bottom:2px solid transparent}
+.tabs button.on{color:var(--text);border-color:var(--text);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--surface);border-radius:16px;padding:12px;box-shadow:var(--sh)}
+.stat b{font-size:24px;display:block}
+.alert{background:var(--soft);border:1px solid #F3B9A4;border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;font-size:14px}
+.client{margin:20px 0 8px;display:flex;justify-content:space-between;align-items:baseline}
+.card{background:var(--surface);border-radius:18px;box-shadow:var(--sh);margin-bottom:10px;overflow:hidden}
+.card>.head{padding:14px;cursor:pointer}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:500;display:inline-flex;gap:6px;align-items:center}
+.chip.p{background:var(--primary);color:#fff}.chip.ok{background:var(--okbg);color:var(--ok)}.chip.late{background:var(--soft);color:var(--warn)}
+.bar{height:6px;background:var(--chip);border-radius:9px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--primary);border-radius:9px}
+.body{padding:0 14px 14px;display:grid;gap:10px;border-top:1px solid var(--border);padding-top:12px}
+.stages{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stage{display:flex;gap:8px;align-items:center;background:var(--bg);border-radius:12px;padding:10px;cursor:pointer;user-select:none}
+.stage input{width:20px;height:20px;accent-color:var(--primary);flex:none;padding:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+label.l{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;font-size:28px;padding:0;box-shadow:0 8px 20px rgba(223,88,48,.4)}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.sheet>div{background:var(--bg);width:100%;max-width:640px;border-radius:22px 22px 0 0;padding:18px;display:grid;gap:10px}
+.empty{text-align:center;color:var(--muted);padding:32px 12px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+// 1) Paste your Supabase values here (Project Settings > API)
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL";
+const SUPABASE_KEY = "PASTE_YOUR_ANON_PUBLIC_KEY";
+
+const STAGES = ["3D Modeling","Material","Clips/360","Rendering","Compiling","Final Delivery"];
+const STATUSES = ["To Do","Base Model","Done"];
+const PRIOS = ["Low","Medium","High"];
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const init = n => (n||"?").trim().slice(0,1).toUpperCase();
+const today = () => new Date().toISOString().slice(0,10);
+
+let db, S = {team:[], clients:[], projects:[], me:null, tab:"all", open:null, q:"", sheet:null, admin:false};
+
+async function boot(){
+  if (SUPABASE_URL.startsWith("PASTE")) {
+    $("#app").innerHTML = '<h1>Almost there</h1><p class="muted" style="margin-top:8px">Open index.html and paste your Supabase URL and anon key at the top of the script.</p>';
+    return;
+  }
+  db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  await load();
+  db.channel("live").on("postgres_changes", {event:"*", schema:"public"}, () => load()).subscribe();
+}
+
+async function load(){
+  const [t,c,p] = await Promise.all([
+    db.from("team").select("*").order("created_at"),
+    db.from("clients").select("*").order("created_at"),
+    db.from("projects").select("*").order("created_at")
+  ]);
+  if (t.error) { $("#app").innerHTML = '<div class="alert">Could not load data. Check your URL, key and that schema.sql ran.</div>'; return; }
+  S.team = t.data; S.clients = c.data; S.projects = p.data;
+  const saved = localStorage.getItem("me");
+  S.me = S.team.find(x => x.id === saved) || null;
+  const focus = document.activeElement;
+  if (focus && /INPUT|TEXTAREA|SELECT/.test(focus.tagName) && S.open) return; // don't disturb typing
+  render();
+}
+
+async function log(what){ if (S.me) await db.from("activity").insert({who:S.me.name, what}); }
+const person = id => S.team.find(t => t.id === id);
+const prog = p => Math.round(STAGES.filter(s => (p.stages||{})[s]).length / STAGES.length * 100);
+const late = p => p.deadline && p.deadline < today() && p.status !== "Done";
+
+function render(){
+  if (!S.me) return renderWho();
+  const mine = S.projects.filter(p => p.assigned_to === S.me.id && p.status !== "Done");
+  const overdue = S.projects.filter(late);
+  $("#app").innerHTML = `
+    <div class="top"><h1>Studio</h1>
+      <button class="me" data-act="switch" aria-label="Switch user"><span class="av s">${init(S.me.name)}</span>${esc(S.me.name)}</button></div>
+    <div class="tabs">
+      ${[["all","Dashboard"],["mine","My tasks"],["settings","Settings"]].map(([k,l]) => `<button class="${S.tab===k?"on":""}" data-act="tab" data-v="${k}">${l}</button>`).join("")}
+    </div>
+    <div id="main"></div>
+    ${S.tab!=="settings" ? '<button class="btn fab" data-act="newproj" aria-label="New project">+</button>' : ""}
+    <div id="sheet"></div>`;
+  if (S.tab === "settings") return renderSettings();
+  const list = S.tab === "mine" ? mine : S.projects;
+  $("#main").innerHTML = `
+    ${S.tab==="all" ? `<div class="stats">
+      <div class="stat"><b>${S.projects.filter(p=>p.status!=="Done").length}</b><span class="muted">Active</span></div>
+      <div class="stat"><b>${mine.length}</b><span class="muted">Yours</span></div>
+      <div class="stat"><b style="color:${overdue.length?"var(--warn)":"inherit"}">${overdue.length}</b><span class="muted">Overdue</span></div></div>
+      ${overdue.length ? `<div class="alert">⚠ ${overdue.length} project${overdue.length>1?"s":""} past deadline: ${esc(overdue.slice(0,2).map(p=>p.name).join(", "))}</div>`:""}` : ""}
+    <input id="q" type="search" placeholder="Search projects" value="${esc(S.q)}" aria-label="Search projects">
+    <div id="list"></div>`;
+  $("#q").oninput = e => { S.q = e.target.value; renderList(list); };
+  renderList(list);
+}
+
+function renderList(list){
+  const q = S.q.toLowerCase();
+  let html = "";
+  S.clients.forEach(c => {
+    const ps = list.filter(p => p.client_id === c.id && (!q || p.name.toLowerCase().includes(q) || c.name.toLowerCase().includes(q)));
+    if (!ps.length && (q || S.tab==="mine")) return;
+    html += `<div class="client"><h2>${esc(c.name)}</h2><span class="muted">${ps.length} project${ps.length===1?"":"s"}</span></div>`;
+    html += ps.length ? ps.map(card).join("") : '<div class="muted" style="margin-bottom:8px">No projects yet.</div>';
+  });
+  $("#list").innerHTML = html || '<div class="empty">Nothing here yet. Tap + to add a project.</div>';
+}
+
+function card(p){
+  const a = person(p.assigned_to), open = S.open === p.id, pr = prog(p);
+  return `<div class="card"><div class="head" data-act="open" data-id="${p.id}">
+    <div class="row"><b>${esc(p.name)}</b><span class="chip ${p.status==="Done"?"ok":"p"}">${esc(p.status)}</span></div>
+    <div class="chips">
+      ${p.priority ? `<span class="chip">${esc(p.priority)} priority</span>`:""}
+      ${a ? `<span class="chip"><span class="av s" style="width:18px;height:18px;font-size:10px">${init(a.name)}</span>${esc(a.name)}</span>` : '<span class="chip">Unassigned</span>'}
+      ${p.deadline ? `<span class="chip ${late(p)?"late":""}">${late(p)?"Overdue · ":"Due "}${esc(p.deadline)}</span>`:""}
+    </div>
+    <div class="bar"><i style="width:${pr}%"></i></div></div>
+    ${open ? `<div class="body">
+      <div class="stages">${STAGES.map(s => `<label class="stage"><input type="checkbox" data-act="stage" data-id="${p.id}" data-s="${esc(s)}" ${(p.stages||{})[s]?"checked":""}>${esc(s)}</label>`).join("")}</div>
+      <div class="grid2">
+        <div><label class="l">Status</label><select data-f="status" data-id="${p.id}">${STATUSES.map(s=>`<option ${s===p.status?"selected":""}>${s}</option>`).join("")}</select></div>
+        <div><label class="l">Priority</label><select data-f="priority" data-id="${p.id}">${PRIOS.map(s=>`<option ${s===p.priority?"selected":""}>${s}</option>`).join("")}</select></div>
+        <div><label class="l">Assigned to</label><select data-f="assigned_to" data-id="${p.id}"><option value="">Unassigned</option>${S.team.map(t=>`<option value="${t.id}" ${t.id===p.assigned_to?"selected":""}>${esc(t.name)}</option>`).join("")}</select></div>
+        <div><label class="l">Deadline</label><input type="date" data-f="deadline" data-id="${p.id}" value="${p.deadline||""}"></div>
+      </div>
+      <div><label class="l">Task</label><textarea data-f="task" data-id="${p.id}">${esc(p.task)}</textarea></div>
+      <div><label class="l">Comments</label><textarea data-f="comments" data-id="${p.id}">${esc(p.comments)}</textarea></div>
+      <button class="btn ghost sm" data-act="delproj" data-id="${p.id}" style="justify-self:start;color:var(--warn)">Delete project</button>
+    </div>` : ""}</div>`;
+}
+
+function renderWho(){
+  $("#app").innerHTML = `<h1 style="margin-top:32px">Who’s opening?</h1><p class="muted">Pick your name to see your tasks.</p>
+    <div class="who">${S.team.map(t => `<button data-act="pick" data-id="${t.id}"><span class="av">${init(t.name)}</span>${esc(t.name)}</button>`).join("") || '<div class="empty">No team members yet. Run schema.sql in Supabase.</div>'}</div>`;
+}
+
+function renderSettings(){
+  if (!S.admin) {
+    $("#main").innerHTML = `<h2>Admin only</h2><p class="muted" style="margin:6px 0 12px">Enter the admin PIN to manage the team and clients.</p>
+      <input id="pin" type="password" inputmode="numeric" placeholder="Admin PIN" aria-label="Admin PIN"><button class="btn" style="margin-top:10px" data-act="unlock">Unlock</button>`;
+    return;
+  }
+  $("#main").innerHTML = `
+    <h2 style="margin-bottom:8px">Team</h2>
+    ${S.team.map(t => `<div class="item"><span class="row" style="gap:10px"><span class="av s">${init(t.name)}</span>${esc(t.name)}</span>
+      <span><button class="btn ghost sm" data-act="rename" data-t="team" data-id="${t.id}">Rename</button> <button class="btn ghost sm" data-act="remove" data-t="team" data-id="${t.id}" style="color:var(--warn)">Remove</button></span></div>`).join("")}
+    <div class="row" style="margin:8px 0 24px"><input id="nt" placeholder="New team member name"><button class="btn" data-act="add" data-t="team" data-i="nt">Add</button></div>
+    <h2 style="margin-bottom:8px">Clients</h2>
+    ${S.clients.map(t => `<div class="item"><span>${esc(t.name)}</span>
+      <span><button class="btn ghost sm" data-act="rename" data-t="clients" data-id="${t.id}">Rename</button> <button class="btn ghost sm" data-act="remove" data-t="clients" data-id="${t.id}" style="color:var(--warn)">Remove</button></span></div>`).join("")}
+    <div class="row" style="margin:8px 0 24px"><input id="nc" placeholder="New client name"><button class="btn" data-act="add" data-t="clients" data-i="nc">Add</button></div>
+    <button class="btn ghost" data-act="lock">Lock settings</button>`;
+}
+
+function openSheet(){
+  $("#sheet").innerHTML = `<div class="sheet" data-act="closesheet"><div onclick="event.stopPropagation()">
+    <h2>New project</h2>
+    <input id="np" placeholder="Project name" aria-label="Project name">
+    <select id="nclient" aria-label="Client">${S.clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select>
+    <select id="nas" aria-label="Assign to"><option value="">Unassigned</option>${S.team.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select>
+    <input id="ndl" type="date" aria-label="Deadline">
+    <div class="row"><button class="btn ghost" data-act="closesheet">Cancel</button><button class="btn" data-act="saveproj">Add project</button></div></div></div>`;
+  $("#np").focus();
+}
+
+async function patch(id, f, v){
+  const p = S.projects.find(x => x.id === id);
+  const {error} = await db.from("projects").update({[f]: v === "" ? null : v}).eq("id", id);
+  if (error) return alert("Could not save: " + error.message);
+  await log(`updated ${f.replace("_"," ")} on ${p.name}`);
+  load();
+}
+
+document.addEventListener("change", async e => {
+  const t = e.target;
+  if (t.dataset.f) return patch(t.dataset.id, t.dataset.f, t.value);
+  if (t.dataset.act === "stage") {
+    const p = S.projects.find(x => x.id === t.dataset.id);
+    const stages = {...(p.stages||{}), [t.dataset.s]: t.checked};
+    await db.from("projects").update({stages}).eq("id", p.id);
+    await log(`${t.checked?"ticked":"unticked"} ${t.dataset.s} on ${p.name}`);
+    S.open = p.id; await load(); render();
+  }
+});
+
+document.addEventListener("click", async e => {
+  const el = e.target.closest("[data-act]"); if (!el) return;
+  const a = el.dataset.act, id = el.dataset.id;
+  if (a === "stage") return;
+  if (a === "pick") { localStorage.setItem("me", id); S.me = person(id); S.tab = "all"; render(); }
+  else if (a === "switch") { localStorage.removeItem("me"); S.me = null; S.admin = false; render(); }
+  else if (a === "tab") { S.tab = el.dataset.v; S.open = null; S.q = ""; render(); }
+  else if (a === "open") { S.open = S.open === id ? null : id; render(); }
+  else if (a === "newproj") openSheet();
+  else if (a === "closesheet") { if (e.target === el || el.tagName === "BUTTON") $("#sheet").innerHTML = ""; }
+  else if (a === "saveproj") {
+    const name = $("#np").value.trim(); if (!name) return $("#np").focus();
+    const {error} = await db.from("projects").insert({name, client_id: $("#nclient").value, assigned_to: $("#nas").value || null, deadline: $("#ndl").value || null});
+    if (error) return alert(error.message);
+    await log(`added project ${name}`); $("#sheet").innerHTML = ""; load();
+  }
+  else if (a === "delproj") { if (confirm("Delete this project?")) { await db.from("projects").delete().eq("id", id); S.open = null; load(); } }
+  else if (a === "unlock") {
+    const {data} = await db.from("app_settings").select("value").eq("key","admin_pin").single();
+    if (data && $("#pin").value === data.value) { S.admin = true; render(); } else { $("#pin").value = ""; $("#pin").placeholder = "Wrong PIN, try again"; }
+  }
+  else if (a === "lock") { S.admin = false; render(); }
+  else if (a === "add") { const v = $("#"+el.dataset.i).value.trim(); if (v) { await db.from(el.dataset.t).insert({name:v}); load(); } }
+  else if (a === "rename") { const cur = S[el.dataset.t].find(x=>x.id===id); const v = prompt("New name", cur.name); if (v && v.trim()) { await db.from(el.dataset.t).update({name:v.trim()}).eq("id", id); load(); } }
+  else if (a === "remove") {
+    const isTeam = el.dataset.t === "team";
+    if (confirm(isTeam ? "Remove this person? Their projects become unassigned." : "Remove this client and all its projects?")) { await db.from(el.dataset.t).delete().eq("id", id); load(); }
+  }
+});
+
+boot();
+</script>
+</body>
+</html>
